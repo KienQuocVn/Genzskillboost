@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ProjectUpload } from "@/components/skills/project-upload"
 import { MainLayout } from "@/components/layout/main-layout"
-import { supabase } from "@/lib/supabase"
+// import { supabase } from "@/lib/supabase"
 // import { getCloudFrontUrl } from "@/lib/cloudfront"
 // import type { Project, ForumThread } from "@/types"
 
@@ -46,49 +46,49 @@ export default function SkillsCommunityPage() {
   const [activeTab, setActiveTab] = useState("projects")
   const [showCreateProject, setShowCreateProject] = useState(false)
 
-  useEffect(() => {
-    fetchData()
-  }, [])
+  // useEffect(() => {
+  //   fetchData()
+  // }, [])
 
-  const fetchData = async () => {
-    try {
-      setLoading(true)
+  // const fetchData = async () => {
+  //   try {
+  //     setLoading(true)
 
-      // Fetch projects with user data and counts
-      const { data: projectsData, error: projectsError } = await supabase
-        .from("projects")
-        .select(`
-          *,
-          user:users(id, name, avatar_url),
-          likes:project_likes(count),
-          comments:project_comments(count)
-        `)
-        .order("created_at", { ascending: false })
-        .limit(12)
+  //     // Fetch projects with user data and counts
+  //     const { data: projectsData, error: projectsError } = await supabase
+  //       .from("projects")
+  //       .select(`
+  //         *,
+  //         user:users(id, name, avatar_url),
+  //         likes:project_likes(count),
+  //         comments:project_comments(count)
+  //       `)
+  //       .order("created_at", { ascending: false })
+  //       .limit(12)
 
-      if (projectsError) throw projectsError
+  //     if (projectsError) throw projectsError
 
-      // Fetch forum threads with user data and reply counts
-      const { data: threadsData, error: threadsError } = await supabase
-        .from("forum_threads")
-        .select(`
-          *,
-          user:users(id, name, avatar_url),
-          replies:forum_replies(count)
-        `)
-        .order("updated_at", { ascending: false })
-        .limit(8)
+  //     // Fetch forum threads with user data and reply counts
+  //     const { data: threadsData, error: threadsError } = await supabase
+  //       .from("forum_threads")
+  //       .select(`
+  //         *,
+  //         user:users(id, name, avatar_url),
+  //         replies:forum_replies(count)
+  //       `)
+  //       .order("updated_at", { ascending: false })
+  //       .limit(8)
 
-      if (threadsError) throw threadsError
+  //     if (threadsError) throw threadsError
 
-      // setProjects(projectsData || [])
-      // setThreads(threadsData || [])
-    } catch (error) {
-      console.error("Error fetching data:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  //     // setProjects(projectsData || [])
+  //     // setThreads(threadsData || [])
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error)
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
 
   // const filteredProjects = projects.filter(
   //   (project) =>

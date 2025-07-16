@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MainLayout } from "@/components/layout/main-layout"
-import { supabase } from "@/lib/supabase"
+// import { supabase } from "@/lib/supabase"
 // import { getCloudFrontUrl } from "@/lib/cloudfront"
 import type { Project, Video } from "@/types"
 
@@ -47,87 +47,87 @@ export default function RecommendationsPage() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("projects")
 
-  useEffect(() => {
-    fetchRecommendations()
-  }, [])
+  // useEffect(() => {
+  //   fetchRecommendations()
+  // }, [])
 
-  const fetchRecommendations = async () => {
-    try {
-      setLoading(true)
+  // const fetchRecommendations = async () => {
+  //   try {
+  //     setLoading(true)
 
-      // Fetch recommended projects based on user preferences
-      const { data: projectsData, error: projectsError } = await supabase.rpc("get_recommended_projects", {
-        user_id: "current-user-id",
-        limit: 12,
-      })
+  //     // Fetch recommended projects based on user preferences
+  //     const { data: projectsData, error: projectsError } = await supabase.rpc("get_recommended_projects", {
+  //       user_id: "current-user-id",
+  //       limit: 12,
+  //     })
 
-      if (projectsError) throw projectsError
+  //     if (projectsError) throw projectsError
 
-      // Fetch recommended videos based on user preferences
-      const { data: videosData, error: videosError } = await supabase.rpc("get_recommended_videos", {
-        user_id: "current-user-id",
-        limit: 12,
-      })
+  //     // Fetch recommended videos based on user preferences
+  //     const { data: videosData, error: videosError } = await supabase.rpc("get_recommended_videos", {
+  //       user_id: "current-user-id",
+  //       limit: 12,
+  //     })
 
-      if (videosError) throw videosError
+  //     if (videosError) throw videosError
 
-      // setRecommendedProjects(projectsData || [])
-      // setRecommendedVideos(videosData || [])
-    } catch (error) {
-      console.error("Error fetching recommendations:", error)
-      // Fallback to regular content if recommendation system fails
-      fetchFallbackContent()
-    } finally {
-      setLoading(false)
-    }
-  }
+  //     // setRecommendedProjects(projectsData || [])
+  //     // setRecommendedVideos(videosData || [])
+  //   } catch (error) {
+  //     console.error("Error fetching recommendations:", error)
+  //     // Fallback to regular content if recommendation system fails
+  //     fetchFallbackContent()
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
 
-  const fetchFallbackContent = async () => {
-    try {
-      // Fetch popular projects as fallback
-      const { data: projectsData } = await supabase
-        .from("projects")
-        .select(`
-          *,
-          user:users(id, name, avatar_url),
-          likes:project_likes(count),
-          comments:project_comments(count)
-        `)
-        .order("like_count", { ascending: false })
-        .limit(12)
+  // const fetchFallbackContent = async () => {
+  //   try {
+  //     // Fetch popular projects as fallback
+  //     const { data: projectsData } = await supabase
+  //       .from("projects")
+  //       .select(`
+  //         *,
+  //         user:users(id, name, avatar_url),
+  //         likes:project_likes(count),
+  //         comments:project_comments(count)
+  //       `)
+  //       .order("like_count", { ascending: false })
+  //       .limit(12)
 
-      // Fetch popular videos as fallback
-      const { data: videosData } = await supabase
-        .from("videos")
-        .select(`
-          *,
-          user:users(id, name, avatar_url),
-          likes:video_likes(count),
-          comments:video_comments(count),
-          views:video_views(count)
-        `)
-        .order("view_count", { ascending: false })
-        .limit(12)
+  //     // Fetch popular videos as fallback
+  //     const { data: videosData } = await supabase
+  //       .from("videos")
+  //       .select(`
+  //         *,
+  //         user:users(id, name, avatar_url),
+  //         likes:video_likes(count),
+  //         comments:video_comments(count),
+  //         views:video_views(count)
+  //       `)
+  //       .order("view_count", { ascending: false })
+  //       .limit(12)
 
-      // Add mock recommendation data
-      const projectsWithRecommendation = (projectsData || []).map((project) => ({
-        ...project,
-        similarity_score: Math.random() * 0.4 + 0.6, // 0.6-1.0
-        recommendation_reason: getRandomRecommendationReason("project"),
-      }))
+  //     // Add mock recommendation data
+  //     const projectsWithRecommendation = (projectsData || []).map((project) => ({
+  //       ...project,
+  //       similarity_score: Math.random() * 0.4 + 0.6, // 0.6-1.0
+  //       recommendation_reason: getRandomRecommendationReason("project"),
+  //     }))
 
-      const videosWithRecommendation = (videosData || []).map((video) => ({
-        ...video,
-        similarity_score: Math.random() * 0.4 + 0.6, // 0.6-1.0
-        recommendation_reason: getRandomRecommendationReason("video"),
-      }))
+  //     const videosWithRecommendation = (videosData || []).map((video) => ({
+  //       ...video,
+  //       similarity_score: Math.random() * 0.4 + 0.6, // 0.6-1.0
+  //       recommendation_reason: getRandomRecommendationReason("video"),
+  //     }))
 
-      // setRecommendedProjects(projectsWithRecommendation)
-      // setRecommendedVideos(videosWithRecommendation)
-    } catch (error) {
-      console.error("Error fetching fallback content:", error)
-    }
-  }
+  //     // setRecommendedProjects(projectsWithRecommendation)
+  //     // setRecommendedVideos(videosWithRecommendation)
+  //   } catch (error) {
+  //     console.error("Error fetching fallback content:", error)
+  //   }
+  // }
 
   const getRandomRecommendationReason = (type: "project" | "video") => {
     const projectReasons = [

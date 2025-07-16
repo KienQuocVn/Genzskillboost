@@ -23,7 +23,7 @@ export function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
           onClick={() => onTabChange("skills")}
         >
           <Briefcase className="h-4 w-4" />
-          <span className="font-medium">Kỹ năng & Cộng đồng</span>
+          <span className="font-medium">Kỹ năng</span>
         </Button>
 
         <Button
@@ -36,7 +36,7 @@ export function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
           onClick={() => onTabChange("videos")}
         >
           <Video className="h-4 w-4" />
-          <span className="font-medium">Video giải trí</span>
+          <span className="font-medium">Video </span>
         </Button>
       </div>
     </div>

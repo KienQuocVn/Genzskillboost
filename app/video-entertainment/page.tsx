@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MainLayout } from "@/components/layout/main-layout"
-import { supabase } from "@/lib/supabase"
+// import { supabase } from "@/lib/supabase"
 // import { getCloudFrontUrl } from "@/lib/cloudfront"
 import type { Video } from "@/types"
 
@@ -33,55 +33,55 @@ export default function VideoEntertainmentPage() {
   const [playingVideo, setPlayingVideo] = useState<string | null>(null)
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement }>({})
 
-  useEffect(() => {
-    fetchVideos()
-    fetchTrendingVideos()
-  }, [])
+  // useEffect(() => {
+  //   fetchVideos()
+  //   fetchTrendingVideos()
+  // }, [])
 
-  const fetchVideos = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("videos")
-        .select(`
-          *,
-          user:users(id, name, avatar_url),
-          likes:video_likes(count),
-          comments:video_comments(count),
-          views:video_views(count)
-        `)
-        .order("created_at", { ascending: false })
-        .limit(20)
+  // const fetchVideos = async () => {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .from("videos")
+  //       .select(`
+  //         *,
+  //         user:users(id, name, avatar_url),
+  //         likes:video_likes(count),
+  //         comments:video_comments(count),
+  //         views:video_views(count)
+  //       `)
+  //       .order("created_at", { ascending: false })
+  //       .limit(20)
 
-      if (error) throw error
-      // setVideos(data || [])
-    } catch (error) {
-      console.error("Error fetching videos:", error)
-    }
-  }
+  //     if (error) throw error
+  //     // setVideos(data || [])
+  //   } catch (error) {
+  //     console.error("Error fetching videos:", error)
+  //   }
+  // }
 
-  const fetchTrendingVideos = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("videos")
-        .select(`
-          *,
-          user:users(id, name, avatar_url),
-          likes:video_likes(count),
-          comments:video_comments(count),
-          views:video_views(count)
-        `)
-        .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
-        .order("view_count", { ascending: false })
-        .limit(5)
+  // const fetchTrendingVideos = async () => {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .from("videos")
+  //       .select(`
+  //         *,
+  //         user:users(id, name, avatar_url),
+  //         likes:video_likes(count),
+  //         comments:video_comments(count),
+  //         views:video_views(count)
+  //       `)
+  //       .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+  //       .order("view_count", { ascending: false })
+  //       .limit(5)
 
-      if (error) throw error
-      // setTrendingVideos(data || [])
-    } catch (error) {
-      console.error("Error fetching trending videos:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  //     if (error) throw error
+  //     // setTrendingVideos(data || [])
+  //   } catch (error) {
+  //     console.error("Error fetching trending videos:", error)
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
 
   const handleVideoPlay = useCallback((videoId: string) => {
     // Pause all other videos
@@ -109,17 +109,17 @@ export default function VideoEntertainmentPage() {
     [handleVideoPlay],
   )
 
-  const handleLike = async (videoId: string) => {
-    try {
-      const { error } = await supabase.from("video_likes").upsert({ video_id: videoId, user_id: "current-user-id" })
+  // const handleLike = async (videoId: string) => {
+  //   try {
+  //     const { error } = await supabase.from("video_likes").upsert({ video_id: videoId, user_id: "current-user-id" })
 
-      if (error) throw error
-      // Refresh video data
-      fetchVideos()
-    } catch (error) {
-      console.error("Error liking video:", error)
-    }
-  }
+  //     if (error) throw error
+  //     // Refresh video data
+  //     fetchVideos()
+  //   } catch (error) {
+  //     console.error("Error liking video:", error)
+  //   }
+  // }
 
   // const VideoCard = ({ video, isCompact = false }: { video: VideoWithUser; isCompact?: boolean }) => (
   //   <Card

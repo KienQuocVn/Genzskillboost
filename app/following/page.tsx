@@ -5,7 +5,7 @@ import { Heart, MessageCircle, Share2, Play, User, Clock, TrendingUp } from "luc
 import Image from "next/image"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
-import { supabase } from "@/lib/supabase"
+// import { supabase } from "@/lib/supabase"
 import { useSocket } from "@/hooks/use-socket"
 // import type { User as UserType } from "@/types/database"
 
@@ -34,200 +34,200 @@ export default function FollowingPage() {
   const socket = useSocket()
 
   // Fetch following content
-  const fetchFollowingContent = useCallback(async () => {
-    if (!session?.user?.id) return
+  // const fetchFollowingContent = useCallback(async () => {
+  //   if (!session?.user?.id) return
 
-    try {
-      setRefreshing(true)
+  //   try {
+  //     setRefreshing(true)
 
-      // Get users that current user follows
-      const { data: following } = await supabase
-        .from("follows")
-        .select("following_id")
-        .eq("follower_id", session.user.id)
+  //     // Get users that current user follows
+  //     const { data: following } = await supabase
+  //       .from("follows")
+  //       .select("following_id")
+  //       .eq("follower_id", session.user.id)
 
-      if (!following || following.length === 0) {
-        setContent([])
-        return
-      }
+  //     if (!following || following.length === 0) {
+  //       setContent([])
+  //       return
+  //     }
 
-      const followingIds = following.map((f) => f.following_id)
+  //     const followingIds = following.map((f) => f.following_id)
 
-      // Fetch projects from followed users
-      const { data: projects } = await supabase
-        .from("projects")
-        .select(`
-          id,
-          title,
-          description,
-          thumbnail_url,
-          created_at,
-          views,
-          user_id,
-          user:profiles(id, username, avatar_url)
-        `)
-        .in("user_id", followingIds)
-        .order("created_at", { ascending: false })
-        .limit(10)
+  //     // Fetch projects from followed users
+  //     const { data: projects } = await supabase
+  //       .from("projects")
+  //       .select(`
+  //         id,
+  //         title,
+  //         description,
+  //         thumbnail_url,
+  //         created_at,
+  //         views,
+  //         user_id,
+  //         user:profiles(id, username, avatar_url)
+  //       `)
+  //       .in("user_id", followingIds)
+  //       .order("created_at", { ascending: false })
+  //       .limit(10)
 
-      // Fetch videos from followed users
-      const { data: videos } = await supabase
-        .from("videos")
-        .select(`
-          id,
-          title,
-          description,
-          thumbnail_url,
-          video_url,
-          created_at,
-          views,
-          user_id,
-          user:profiles(id, username, avatar_url)
-        `)
-        .in("user_id", followingIds)
-        .order("created_at", { ascending: false })
-        .limit(10)
+  //     // Fetch videos from followed users
+  //     const { data: videos } = await supabase
+  //       .from("videos")
+  //       .select(`
+  //         id,
+  //         title,
+  //         description,
+  //         thumbnail_url,
+  //         video_url,
+  //         created_at,
+  //         views,
+  //         user_id,
+  //         user:profiles(id, username, avatar_url)
+  //       `)
+  //       .in("user_id", followingIds)
+  //       .order("created_at", { ascending: false })
+  //       .limit(10)
 
-      // Get likes for current user
-      const allContentIds = [...(projects?.map((p) => p.id) || []), ...(videos?.map((v) => v.id) || [])]
+  //     // Get likes for current user
+  //     const allContentIds = [...(projects?.map((p) => p.id) || []), ...(videos?.map((v) => v.id) || [])]
 
-      const { data: userLikes } = await supabase
-        .from("likes")
-        .select("content_id, content_type")
-        .eq("user_id", session.user.id)
-        .in("content_id", allContentIds)
+  //     const { data: userLikes } = await supabase
+  //       .from("likes")
+  //       .select("content_id, content_type")
+  //       .eq("user_id", session.user.id)
+  //       .in("content_id", allContentIds)
 
-      const likedContent = new Set(userLikes?.map((like) => `${like.content_type}-${like.content_id}`) || [])
+  //     const likedContent = new Set(userLikes?.map((like) => `${like.content_type}-${like.content_id}`) || [])
 
-      // Combine and format content
-      const allContent: FollowingContent[] = [
-        ...(projects?.map((project) => ({
-          id: project.id,
-          type: "project" as const,
-          title: project.title,
-          description: project.description,
-          thumbnail_url: project.thumbnail_url,
-          created_at: project.created_at,
-          user: project.user,
-          stats: {
-            views: project.views || 0,
-            likes: 0, // TODO: Get actual likes count
-            comments: 0, // TODO: Get actual comments count
-          },
-          isLiked: likedContent.has(`project-${project.id}`),
-        })) || []),
-        ...(videos?.map((video) => ({
-          id: video.id,
-          type: "video" as const,
-          title: video.title,
-          description: video.description,
-          thumbnail_url: video.thumbnail_url,
-          video_url: video.video_url,
-          created_at: video.created_at,
-          user: video.user,
-          stats: {
-            views: video.views || 0,
-            likes: 0, // TODO: Get actual likes count
-            comments: 0, // TODO: Get actual comments count
-          },
-          isLiked: likedContent.has(`video-${video.id}`),
-        })) || []),
-      ]
+  //     // Combine and format content
+  //     const allContent: FollowingContent[] = [
+  //       ...(projects?.map((project) => ({
+  //         id: project.id,
+  //         type: "project" as const,
+  //         title: project.title,
+  //         description: project.description,
+  //         thumbnail_url: project.thumbnail_url,
+  //         created_at: project.created_at,
+  //         user: project.user,
+  //         stats: {
+  //           views: project.views || 0,
+  //           likes: 0, // TODO: Get actual likes count
+  //           comments: 0, // TODO: Get actual comments count
+  //         },
+  //         isLiked: likedContent.has(`project-${project.id}`),
+  //       })) || []),
+  //       ...(videos?.map((video) => ({
+  //         id: video.id,
+  //         type: "video" as const,
+  //         title: video.title,
+  //         description: video.description,
+  //         thumbnail_url: video.thumbnail_url,
+  //         video_url: video.video_url,
+  //         created_at: video.created_at,
+  //         user: video.user,
+  //         stats: {
+  //           views: video.views || 0,
+  //           likes: 0, // TODO: Get actual likes count
+  //           comments: 0, // TODO: Get actual comments count
+  //         },
+  //         isLiked: likedContent.has(`video-${video.id}`),
+  //       })) || []),
+  //     ]
 
-      // Sort by creation date
-      allContent.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+  //     // Sort by creation date
+  //     allContent.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
-      setContent(allContent)
-    } catch (error) {
-      console.error("Error fetching following content:", error)
-    } finally {
-      setLoading(false)
-      setRefreshing(false)
-    }
-  }, [session?.user?.id])
+  //     setContent(allContent)
+  //   } catch (error) {
+  //     console.error("Error fetching following content:", error)
+  //   } finally {
+  //     setLoading(false)
+  //     setRefreshing(false)
+  //   }
+  // }, [session?.user?.id])
 
-  useEffect(() => {
-    fetchFollowingContent()
-  }, [fetchFollowingContent])
+  // useEffect(() => {
+  //   fetchFollowingContent()
+  // }, [fetchFollowingContent])
 
   // Socket.io real-time updates
-  useEffect(() => {
-    if (!socket || !session?.user?.id) return
+  // useEffect(() => {
+  //   if (!socket || !session?.user?.id) return
 
-    const handleNewContent = (data: any) => {
-      // Add new content to the top of the list
-      setContent((prev) => [data, ...prev])
-    }
+  //   const handleNewContent = (data: any) => {
+  //     // Add new content to the top of the list
+  //     setContent((prev) => [data, ...prev])
+  //   }
 
-    const handleContentUpdate = (data: any) => {
-      // Update existing content
-      setContent((prev) =>
-        prev.map((item) => (item.id === data.id && item.type === data.type ? { ...item, ...data } : item)),
-      )
-    }
+  //   const handleContentUpdate = (data: any) => {
+  //     // Update existing content
+  //     setContent((prev) =>
+  //       prev.map((item) => (item.id === data.id && item.type === data.type ? { ...item, ...data } : item)),
+  //     )
+  //   }
 
-    socket.on("new_content", handleNewContent)
-    socket.on("content_updated", handleContentUpdate)
+  //   socket.on("new_content", handleNewContent)
+  //   socket.on("content_updated", handleContentUpdate)
 
-    return () => {
-      socket.off("new_content", handleNewContent)
-      socket.off("content_updated", handleContentUpdate)
-    }
-  }, [socket, session?.user?.id])
+  //   return () => {
+  //     socket.off("new_content", handleNewContent)
+  //     socket.off("content_updated", handleContentUpdate)
+  //   }
+  // }, [socket, session?.user?.id])
 
-  const handleLike = async (contentId: string, contentType: "project" | "video") => {
-    if (!session?.user?.id) return
+  // const handleLike = async (contentId: string, contentType: "project" | "video") => {
+  //   if (!session?.user?.id) return
 
-    try {
-      const item = content.find((c) => c.id === contentId && c.type === contentType)
-      if (!item) return
+  //   try {
+  //     const item = content.find((c) => c.id === contentId && c.type === contentType)
+  //     if (!item) return
 
-      if (item.isLiked) {
-        // Unlike
-        await supabase
-          .from("likes")
-          .delete()
-          .eq("user_id", session.user.id)
-          .eq("content_id", contentId)
-          .eq("content_type", contentType)
-      } else {
-        // Like
-        await supabase.from("likes").insert({
-          user_id: session.user.id,
-          content_id: contentId,
-          content_type: contentType,
-        })
-      }
+  //     if (item.isLiked) {
+  //       // Unlike
+  //       await supabase
+  //         .from("likes")
+  //         .delete()
+  //         .eq("user_id", session.user.id)
+  //         .eq("content_id", contentId)
+  //         .eq("content_type", contentType)
+  //     } else {
+  //       // Like
+  //       await supabase.from("likes").insert({
+  //         user_id: session.user.id,
+  //         content_id: contentId,
+  //         content_type: contentType,
+  //       })
+  //     }
 
-      // Update local state
-      setContent((prev) =>
-        prev.map((item) =>
-          item.id === contentId && item.type === contentType
-            ? {
-                ...item,
-                isLiked: !item.isLiked,
-                stats: {
-                  ...item.stats,
-                  likes: item.isLiked ? item.stats.likes - 1 : item.stats.likes + 1,
-                },
-              }
-            : item,
-        ),
-      )
+  //     // Update local state
+  //     setContent((prev) =>
+  //       prev.map((item) =>
+  //         item.id === contentId && item.type === contentType
+  //           ? {
+  //               ...item,
+  //               isLiked: !item.isLiked,
+  //               stats: {
+  //                 ...item.stats,
+  //                 likes: item.isLiked ? item.stats.likes - 1 : item.stats.likes + 1,
+  //               },
+  //             }
+  //           : item,
+  //       ),
+  //     )
 
-      // Emit socket event for real-time updates
-      if (socket) {
-        socket.emit("content_liked", {
-          contentId,
-          contentType,
-          userId: session.user.id,
-          liked: !item.isLiked,
-        })
-      }
-    } catch (error) {
-      console.error("Error toggling like:", error)
-    }
-  }
+  //     // Emit socket event for real-time updates
+  //     if (socket) {
+  //       socket.emit("content_liked", {
+  //         contentId,
+  //         contentType,
+  //         userId: session.user.id,
+  //         liked: !item.isLiked,
+  //       })
+  //     }
+  //   } catch (error) {
+  //     console.error("Error toggling like:", error)
+  //   }
+  // }
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString)
@@ -309,7 +309,7 @@ export default function FollowingPage() {
       {/* Actions */}
       <div className="flex items-center justify-between px-4 pb-4">
         <div className="flex items-center space-x-6">
-          <button
+          {/* <button
             onClick={() => handleLike(item.id, item.type)}
             className={`flex items-center space-x-2 transition-colors ${
               item.isLiked ? "text-red-500" : "text-gray-500 hover:text-red-500"
@@ -317,7 +317,7 @@ export default function FollowingPage() {
           >
             <Heart className={`w-5 h-5 ${item.isLiked ? "fill-current" : ""}`} />
             <span className="text-sm">{item.stats.likes}</span>
-          </button>
+          </button> */}
 
           <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
             <MessageCircle className="w-5 h-5" />
@@ -370,14 +370,14 @@ export default function FollowingPage() {
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Đang theo dõi</h1>
               <p className="text-gray-600 dark:text-gray-400">Nội dung mới nhất từ những người bạn theo dõi</p>
             </div>
-            <button
+            {/* <button
               onClick={fetchFollowingContent}
               disabled={refreshing}
               className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
             >
               <TrendingUp className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
               <span>Làm mới</span>
-            </button>
+            </button> */}
           </div>
         </div>
 

@@ -20,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 import { uploadToS3 } from "@/lib/aws-s3"
-import { supabase } from "@/lib/supabase"
+// import { supabase } from "@/lib/supabase"
 import { formatDate } from "@/lib/utils"
 
 const profileSchema = z.object({
@@ -125,161 +125,161 @@ export default function ProfilePage() {
   }, [status, router])
 
   // Fetch user profile data
-  useEffect(() => {
-    if (session?.user?.id) {
-      fetchUserProfile()
-      fetchUserContent()
-    }
-  }, [session])
+  // useEffect(() => {
+  //   if (session?.user?.id) {
+  //     fetchUserProfile()
+  //     fetchUserContent()
+  //   }
+  // }, [session])
 
-  const fetchUserProfile = async () => {
-    if (!session?.user?.id) return
+  // const fetchUserProfile = async () => {
+  //   if (!session?.user?.id) return
 
-    try {
-      const { data: userData, error } = await supabase
-        .from("users")
-        .select(`
-          *,
-          projects:projects(count),
-          videos:videos(count),
-          followers:follows!follows_following_id_fkey(count),
-          following:follows!follows_follower_id_fkey(count)
-        `)
-        .eq("id", session.user.id)
-        .single()
+  //   try {
+  //     const { data: userData, error } = await supabase
+  //       .from("users")
+  //       .select(`
+  //         *,
+  //         projects:projects(count),
+  //         videos:videos(count),
+  //         followers:follows!follows_following_id_fkey(count),
+  //         following:follows!follows_follower_id_fkey(count)
+  //       `)
+  //       .eq("id", session.user.id)
+  //       .single()
 
-      if (error) throw error
+  //     if (error) throw error
 
-      const profileData: UserProfile = {
-        id: userData.id,
-        email: userData.email,
-        fullName: userData.full_name,
-        username: userData.username,
-        bio: userData.bio,
-        location: userData.location,
-        website: userData.website,
-        githubUrl: userData.github_url,
-        linkedinUrl: userData.linkedin_url,
-        twitterUrl: userData.twitter_url,
-        avatarUrl: userData.avatar_url,
-        skills: userData.skills || [],
-        createdAt: userData.created_at,
-        projectsCount: userData.projects[0]?.count || 0,
-        videosCount: userData.videos[0]?.count || 0,
-        followersCount: userData.followers[0]?.count || 0,
-        followingCount: userData.following[0]?.count || 0,
-      }
+  //     const profileData: UserProfile = {
+  //       id: userData.id,
+  //       email: userData.email,
+  //       fullName: userData.full_name,
+  //       username: userData.username,
+  //       bio: userData.bio,
+  //       location: userData.location,
+  //       website: userData.website,
+  //       githubUrl: userData.github_url,
+  //       linkedinUrl: userData.linkedin_url,
+  //       twitterUrl: userData.twitter_url,
+  //       avatarUrl: userData.avatar_url,
+  //       skills: userData.skills || [],
+  //       createdAt: userData.created_at,
+  //       projectsCount: userData.projects[0]?.count || 0,
+  //       videosCount: userData.videos[0]?.count || 0,
+  //       followersCount: userData.followers[0]?.count || 0,
+  //       followingCount: userData.following[0]?.count || 0,
+  //     }
 
-      setProfile(profileData)
+  //     setProfile(profileData)
 
-      // Set form values
-      reset({
-        fullName: profileData.fullName,
-        username: profileData.username,
-        bio: profileData.bio || "",
-        location: profileData.location || "",
-        website: profileData.website || "",
-        githubUrl: profileData.githubUrl || "",
-        linkedinUrl: profileData.linkedinUrl || "",
-        twitterUrl: profileData.twitterUrl || "",
-        skills: profileData.skills,
-      })
-    } catch (error) {
-      console.error("Error fetching profile:", error)
-      toast({
-        title: "Lỗi",
-        description: "Không thể tải thông tin hồ sơ",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  //     // Set form values
+  //     reset({
+  //       fullName: profileData.fullName,
+  //       username: profileData.username,
+  //       bio: profileData.bio || "",
+  //       location: profileData.location || "",
+  //       website: profileData.website || "",
+  //       githubUrl: profileData.githubUrl || "",
+  //       linkedinUrl: profileData.linkedinUrl || "",
+  //       twitterUrl: profileData.twitterUrl || "",
+  //       skills: profileData.skills,
+  //     })
+  //   } catch (error) {
+  //     console.error("Error fetching profile:", error)
+  //     toast({
+  //       title: "Lỗi",
+  //       description: "Không thể tải thông tin hồ sơ",
+  //       variant: "destructive",
+  //     })
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
 
-  const fetchUserContent = async () => {
-    if (!session?.user?.id) return
+  // const fetchUserContent = async () => {
+  //   if (!session?.user?.id) return
 
-    try {
-      // Fetch user projects
-      const { data: projects, error: projectsError } = await supabase
-        .from("projects")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false })
-        .limit(6)
+  //   try {
+  //     // Fetch user projects
+  //     const { data: projects, error: projectsError } = await supabase
+  //       .from("projects")
+  //       .select("*")
+  //       .eq("user_id", session.user.id)
+  //       .order("created_at", { ascending: false })
+  //       .limit(6)
 
-      if (projectsError) throw projectsError
-      setUserProjects(projects || [])
+  //     if (projectsError) throw projectsError
+  //     setUserProjects(projects || [])
 
-      // Fetch user videos
-      const { data: videos, error: videosError } = await supabase
-        .from("videos")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false })
-        .limit(6)
+  //     // Fetch user videos
+  //     const { data: videos, error: videosError } = await supabase
+  //       .from("videos")
+  //       .select("*")
+  //       .eq("user_id", session.user.id)
+  //       .order("created_at", { ascending: false })
+  //       .limit(6)
 
-      if (videosError) throw videosError
-      setUserVideos(videos || [])
-    } catch (error) {
-      console.error("Error fetching user content:", error)
-    }
-  }
+  //     if (videosError) throw videosError
+  //     setUserVideos(videos || [])
+  //   } catch (error) {
+  //     console.error("Error fetching user content:", error)
+  //   }
+  // }
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file || !session?.user?.id) return
+  // const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0]
+  //   if (!file || !session?.user?.id) return
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      toast({
-        title: "Lỗi",
-        description: "Vui lòng chọn file hình ảnh hợp lệ",
-        variant: "destructive",
-      })
-      return
-    }
+  //   // Validate file type
+  //   if (!file.type.startsWith("image/")) {
+  //     toast({
+  //       title: "Lỗi",
+  //       description: "Vui lòng chọn file hình ảnh hợp lệ",
+  //       variant: "destructive",
+  //     })
+  //     return
+  //   }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "Lỗi",
-        description: "File ảnh không được vượt quá 5MB",
-        variant: "destructive",
-      })
-      return
-    }
+  //   // Validate file size (max 5MB)
+  //   if (file.size > 5 * 1024 * 1024) {
+  //     toast({
+  //       title: "Lỗi",
+  //       description: "File ảnh không được vượt quá 5MB",
+  //       variant: "destructive",
+  //     })
+  //     return
+  //   }
 
-    setIsUploadingAvatar(true)
+  //   setIsUploadingAvatar(true)
 
-    try {
-      // Upload to S3
-      const fileName = `avatars/${session.user.id}-${Date.now()}.${file.name.split(".").pop()}`
-      const avatarUrl = await uploadToS3(file, fileName)
+  //   try {
+  //     // Upload to S3
+  //     const fileName = `avatars/${session.user.id}-${Date.now()}.${file.name.split(".").pop()}`
+  //     const avatarUrl = await uploadToS3(file, fileName)
 
-      // Update database
-      const { error } = await supabase.from("users").update({ avatar_url: avatarUrl }).eq("id", session.user.id)
+  //     // Update database
+  //     const { error } = await supabase.from("users").update({ avatar_url: avatarUrl }).eq("id", session.user.id)
 
-      if (error) throw error
+  //     if (error) throw error
 
-      // Update local state
-      setProfile((prev) => (prev ? { ...prev, avatarUrl } : null))
+  //     // Update local state
+  //     setProfile((prev) => (prev ? { ...prev, avatarUrl } : null))
 
-      toast({
-        title: "Thành công!",
-        description: "Ảnh đại diện đã được cập nhật",
-      })
-    } catch (error) {
-      console.error("Error uploading avatar:", error)
-      toast({
-        title: "Lỗi",
-        description: "Không thể tải ảnh lên. Vui lòng thử lại.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsUploadingAvatar(false)
-    }
-  }
+  //     toast({
+  //       title: "Thành công!",
+  //       description: "Ảnh đại diện đã được cập nhật",
+  //     })
+  //   } catch (error) {
+  //     console.error("Error uploading avatar:", error)
+  //     toast({
+  //       title: "Lỗi",
+  //       description: "Không thể tải ảnh lên. Vui lòng thử lại.",
+  //       variant: "destructive",
+  //     })
+  //   } finally {
+  //     setIsUploadingAvatar(false)
+  //   }
+  // }
 
   const addSkill = () => {
     if (currentSkill.trim() && !watchedSkills.includes(currentSkill.trim())) {
@@ -294,83 +294,83 @@ export default function ProfilePage() {
     setValue("skills", newSkills)
   }
 
-  const onSubmit = async (data: ProfileFormData) => {
-    if (!session?.user?.id) return
+  // const onSubmit = async (data: ProfileFormData) => {
+  //   if (!session?.user?.id) return
 
-    setSaving(true)
+  //   setSaving(true)
 
-    try {
-      // Check if username is already taken (excluding current user)
-      const { data: existingUser } = await supabase
-        .from("users")
-        .select("id")
-        .eq("username", data.username)
-        .neq("id", session.user.id)
-        .single()
+  //   try {
+  //     // Check if username is already taken (excluding current user)
+  //     const { data: existingUser } = await supabase
+  //       .from("users")
+  //       .select("id")
+  //       .eq("username", data.username)
+  //       .neq("id", session.user.id)
+  //       .single()
 
-      if (existingUser) {
-        toast({
-          title: "Lỗi",
-          description: "Username này đã được sử dụng",
-          variant: "destructive",
-        })
-        return
-      }
+  //     if (existingUser) {
+  //       toast({
+  //         title: "Lỗi",
+  //         description: "Username này đã được sử dụng",
+  //         variant: "destructive",
+  //       })
+  //       return
+  //     }
 
-      // Update profile
-      const { error } = await supabase
-        .from("users")
-        .update({
-          full_name: data.fullName,
-          username: data.username,
-          bio: data.bio || null,
-          location: data.location || null,
-          website: data.website || null,
-          github_url: data.githubUrl || null,
-          linkedin_url: data.linkedinUrl || null,
-          twitter_url: data.twitterUrl || null,
-          skills: data.skills,
-        })
-        .eq("id", session.user.id)
+  //     // Update profile
+  //     const { error } = await supabase
+  //       .from("users")
+  //       .update({
+  //         full_name: data.fullName,
+  //         username: data.username,
+  //         bio: data.bio || null,
+  //         location: data.location || null,
+  //         website: data.website || null,
+  //         github_url: data.githubUrl || null,
+  //         linkedin_url: data.linkedinUrl || null,
+  //         twitter_url: data.twitterUrl || null,
+  //         skills: data.skills,
+  //       })
+  //       .eq("id", session.user.id)
 
-      if (error) throw error
+  //     if (error) throw error
 
-      // Update local state
-      setProfile((prev) =>
-        prev
-          ? {
-              ...prev,
-              fullName: data.fullName,
-              username: data.username,
-              bio: data.bio,
-              location: data.location,
-              website: data.website,
-              githubUrl: data.githubUrl,
-              linkedinUrl: data.linkedinUrl,
-              twitterUrl: data.twitterUrl,
-              skills: data.skills,
-            }
-          : null,
-      )
+  //     // Update local state
+  //     setProfile((prev) =>
+  //       prev
+  //         ? {
+  //             ...prev,
+  //             fullName: data.fullName,
+  //             username: data.username,
+  //             bio: data.bio,
+  //             location: data.location,
+  //             website: data.website,
+  //             githubUrl: data.githubUrl,
+  //             linkedinUrl: data.linkedinUrl,
+  //             twitterUrl: data.twitterUrl,
+  //             skills: data.skills,
+  //           }
+  //         : null,
+  //     )
 
-      setIsEditing(false)
-      setShowSuccessModal(true)
+  //     setIsEditing(false)
+  //     setShowSuccessModal(true)
 
-      toast({
-        title: "Thành công!",
-        description: "Hồ sơ đã được cập nhật",
-      })
-    } catch (error) {
-      console.error("Error updating profile:", error)
-      toast({
-        title: "Lỗi",
-        description: "Không thể cập nhật hồ sơ. Vui lòng thử lại.",
-        variant: "destructive",
-      })
-    } finally {
-      setSaving(false)
-    }
-  }
+  //     toast({
+  //       title: "Thành công!",
+  //       description: "Hồ sơ đã được cập nhật",
+  //     })
+  //   } catch (error) {
+  //     console.error("Error updating profile:", error)
+  //     toast({
+  //       title: "Lỗi",
+  //       description: "Không thể cập nhật hồ sơ. Vui lòng thử lại.",
+  //       variant: "destructive",
+  //     })
+  //   } finally {
+  //     setSaving(false)
+  //   }
+  // }
 
   if (status === "loading" || isLoading) {
     return (
@@ -418,13 +418,13 @@ export default function ProfilePage() {
                     {isUploadingAvatar ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
                   </Button>
 
-                  <input
+                  {/* <input
                     ref={fileInputRef}
                     type="file"
                     accept="image/*"
                     onChange={handleAvatarUpload}
                     className="hidden"
-                  />
+                  /> */}
                 </div>
 
                 {/* Profile Info */}
@@ -559,7 +559,9 @@ export default function ProfilePage() {
                 <CardTitle>Chỉnh sửa hồ sơ</CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <form
+                //  onSubmit={handleSubmit(onSubmit)}
+                  className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Full Name */}
                     <div className="space-y-2">

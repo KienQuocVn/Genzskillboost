@@ -5,7 +5,7 @@ import { Heart, MessageCircle, Upload, UserPlus, Eye, Calendar, ChevronLeft, Che
 import Image from "next/image"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
-import { supabase } from "@/lib/supabase"
+// import { supabase } from "@/lib/supabase"
 
 interface Activity {
   id: string
@@ -39,39 +39,39 @@ export default function ActivityPage() {
   const [filter, setFilter] = useState<"all" | "likes" | "comments" | "uploads" | "follows">("all")
 
   // Fetch user activities
-  const fetchActivities = useCallback(async () => {
-    if (!session?.user?.id) return
+  // const fetchActivities = useCallback(async () => {
+    // if (!session?.user?.id) return
 
-    setLoading(true)
-    try {
-      let query = supabase
-        .from("user_activities")
-        .select(`
-          id,
-          type,
-          created_at,
-          content_id,
-          content_type,
-          target_user_id,
-          metadata,
-          content:projects(id, title, thumbnail_url),
-          content_video:videos(id, title, thumbnail_url),
-          target_user:profiles(id, username, avatar_url)
-        `)
-        .eq("user_id", session.user.id)
+    // setLoading(true)
+    // try {
+      // let query = supabase
+      //   .from("user_activities")
+      //   .select(`
+      //     id,
+      //     type,
+      //     created_at,
+      //     content_id,
+      //     content_type,
+      //     target_user_id,
+      //     metadata,
+      //     content:projects(id, title, thumbnail_url),
+      //     content_video:videos(id, title, thumbnail_url),
+      //     target_user:profiles(id, username, avatar_url)
+      //   `)
+      //   .eq("user_id", session.user.id)
 
-      // Apply filter
-      if (filter !== "all") {
-        query = query.eq("type", filter.slice(0, -1)) // Remove 's' from filter
-      }
+      // // Apply filter
+      // if (filter !== "all") {
+      //   query = query.eq("type", filter.slice(0, -1)) // Remove 's' from filter
+      // }
 
       // Apply pagination
-      const from = (currentPage - 1) * ITEMS_PER_PAGE
-      const to = from + ITEMS_PER_PAGE - 1
+      // const from = (currentPage - 1) * ITEMS_PER_PAGE
+      // const to = from + ITEMS_PER_PAGE - 1
 
-      const { data, error, count } = await query.order("created_at", { ascending: false }).range(from, to)
+      // const { data, error, count } = await query.order("created_at", { ascending: false }).range(from, to)
 
-      if (error) throw error
+      // if (error) throw error
 
       // Format activities
       // const formattedActivities: Activity[] = (data || []).map((activity) => ({
@@ -99,17 +99,17 @@ export default function ActivityPage() {
       // }))
 
       // setActivities(formattedActivities)
-      setTotalPages(Math.ceil((count || 0) / ITEMS_PER_PAGE))
-    } catch (error) {
-      console.error("Error fetching activities:", error)
-    } finally {
-      setLoading(false)
-    }
-  }, [session?.user?.id, currentPage, filter])
+      // setTotalPages(Math.ceil((count || 0) / ITEMS_PER_PAGE))
+  //   } catch (error) {
+  //     console.error("Error fetching activities:", error)
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }, [session?.user?.id, currentPage, filter])
 
-  useEffect(() => {
-    fetchActivities()
-  }, [fetchActivities])
+  // useEffect(() => {
+  //   fetchActivities()
+  // }, [fetchActivities])
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString)

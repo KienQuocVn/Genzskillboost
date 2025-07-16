@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { Ratelimit } from "@upstash/ratelimit"
-import { Redis } from "@upstash/redis"
+// import { Redis } from "@upstash/redis"
 
 // Create rate limiter
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, "10 s"), // 10 requests per 10 seconds
-  analytics: true,
-})
+// const ratelimit = new Ratelimit({
+//   redis: Redis.fromEnv(),
+//   limiter: Ratelimit.slidingWindow(10, "10 s"), // 10 requests per 10 seconds
+//   analytics: true,
+// })
 
 // Input sanitization function
 export function sanitizeInput(input: string): string {
@@ -73,18 +73,18 @@ export async function middleware(request: NextRequest) {
   // Apply rate limiting to API routes
   if (request.nextUrl.pathname.startsWith("/api/")) {
     const ip = request.ip ?? "127.0.0.1"
-    const { success, pending, limit, reset, remaining } = await ratelimit.limit(ip)
+    // const { success, pending, limit, reset, remaining } = await ratelimit.limit(ip)
 
-    if (!success) {
-      logRequest(request, 429, "Rate limit exceeded")
-      return new NextResponse("Rate limit exceeded", { status: 429 })
-    }
+    // if (!success) {
+    //   logRequest(request, 429, "Rate limit exceeded")
+    //   return new NextResponse("Rate limit exceeded", { status: 429 })
+    // }
 
     // Add rate limit headers
     const response = NextResponse.next()
-    response.headers.set("X-RateLimit-Limit", limit.toString())
-    response.headers.set("X-RateLimit-Remaining", remaining.toString())
-    response.headers.set("X-RateLimit-Reset", new Date(reset).toISOString())
+    // response.headers.set("X-RateLimit-Limit", limit.toString())
+    // response.headers.set("X-RateLimit-Remaining", remaining.toString())
+    // response.headers.set("X-RateLimit-Reset", new Date(reset).toISOString())
 
     return response
   }

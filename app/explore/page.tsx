@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { Search, Filter, Grid, List, Eye, Heart, MessageCircle } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { supabase } from "@/lib/supabase"
+// import { supabase } from "@/lib/supabase"
 import { useDebounce } from "@/hooks/use-debounce"
 // import type { User } from "@/types/database"
 
@@ -44,208 +44,208 @@ export default function ExplorePage() {
   const debouncedSearchQuery = useDebounce(searchQuery, 300)
 
   // Fetch categories
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const { data: projectCategories } = await supabase
-          .from("projects")
-          .select("category")
-          .not("category", "is", null)
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const { data: projectCategories } = await supabase
+  //         .from("projects")
+  //         .select("category")
+  //         .not("category", "is", null)
 
-        const { data: videoCategories } = await supabase.from("videos").select("category").not("category", "is", null)
+  //       const { data: videoCategories } = await supabase.from("videos").select("category").not("category", "is", null)
 
-        // const allCategories = [
-        //   ...new Set([
-        //     ...(projectCategories?.map((p) => p.category) || []),
-        //     ...(videoCategories?.map((v) => v.category) || []),
-        //   ]),
-        // ]
+  //       // const allCategories = [
+  //       //   ...new Set([
+  //       //     ...(projectCategories?.map((p) => p.category) || []),
+  //       //     ...(videoCategories?.map((v) => v.category) || []),
+  //       //   ]),
+  //       // ]
 
-        // setCategories(allCategories)
-      } catch (error) {
-        console.error("Error fetching categories:", error)
-      }
-    }
+  //       // setCategories(allCategories)
+  //     } catch (error) {
+  //       console.error("Error fetching categories:", error)
+  //     }
+  //   }
 
-    fetchCategories()
-  }, [])
+  //   fetchCategories()
+  // }, [])
 
   // Fetch content based on filters and search
-  const fetchContent = useCallback(async () => {
-    setLoading(true)
-    try {
-      let projectsQuery = supabase.from("projects").select(`
-          id,
-          title,
-          description,
-          thumbnail_url,
-          created_at,
-          category,
-          views,
-          likes,
-          user:profiles(id, username, avatar_url)
-        `)
+  // const fetchContent = useCallback(async () => {
+  //   setLoading(true)
+  //   try {
+  //     let projectsQuery = supabase.from("projects").select(`
+  //         id,
+  //         title,
+  //         description,
+  //         thumbnail_url,
+  //         created_at,
+  //         category,
+  //         views,
+  //         likes,
+  //         user:profiles(id, username, avatar_url)
+  //       `)
 
-      let videosQuery = supabase.from("videos").select(`
-          id,
-          title,
-          description,
-          thumbnail_url,
-          created_at,
-          category,
-          views,
-          likes,
-          user:profiles(id, username, avatar_url)
-        `)
+  //     let videosQuery = supabase.from("videos").select(`
+  //         id,
+  //         title,
+  //         description,
+  //         thumbnail_url,
+  //         created_at,
+  //         category,
+  //         views,
+  //         likes,
+  //         user:profiles(id, username, avatar_url)
+  //       `)
 
-      // Apply search filter
-      if (debouncedSearchQuery) {
-        projectsQuery = projectsQuery.or(
-          `title.ilike.%${debouncedSearchQuery}%,description.ilike.%${debouncedSearchQuery}%`,
-        )
-        videosQuery = videosQuery.or(
-          `title.ilike.%${debouncedSearchQuery}%,description.ilike.%${debouncedSearchQuery}%`,
-        )
-      }
+  //     // Apply search filter
+  //     if (debouncedSearchQuery) {
+  //       projectsQuery = projectsQuery.or(
+  //         `title.ilike.%${debouncedSearchQuery}%,description.ilike.%${debouncedSearchQuery}%`,
+  //       )
+  //       videosQuery = videosQuery.or(
+  //         `title.ilike.%${debouncedSearchQuery}%,description.ilike.%${debouncedSearchQuery}%`,
+  //       )
+  //     }
 
-      // Apply category filter
-      if (filters.category !== "all") {
-        projectsQuery = projectsQuery.eq("category", filters.category)
-        videosQuery = videosQuery.eq("category", filters.category)
-      }
+  //     // Apply category filter
+  //     if (filters.category !== "all") {
+  //       projectsQuery = projectsQuery.eq("category", filters.category)
+  //       videosQuery = videosQuery.eq("category", filters.category)
+  //     }
 
-      // Apply sorting
-      switch (filters.sortBy) {
-        case "latest":
-          projectsQuery = projectsQuery.order("created_at", { ascending: false })
-          videosQuery = videosQuery.order("created_at", { ascending: false })
-          break
-        case "trending":
-          projectsQuery = projectsQuery.order("views", { ascending: false })
-          videosQuery = videosQuery.order("views", { ascending: false })
-          break
-        case "popular":
-          projectsQuery = projectsQuery.order("likes", { ascending: false })
-          videosQuery = videosQuery.order("likes", { ascending: false })
-          break
-      }
+  //     // Apply sorting
+  //     switch (filters.sortBy) {
+  //       case "latest":
+  //         projectsQuery = projectsQuery.order("created_at", { ascending: false })
+  //         videosQuery = videosQuery.order("created_at", { ascending: false })
+  //         break
+  //       case "trending":
+  //         projectsQuery = projectsQuery.order("views", { ascending: false })
+  //         videosQuery = videosQuery.order("views", { ascending: false })
+  //         break
+  //       case "popular":
+  //         projectsQuery = projectsQuery.order("likes", { ascending: false })
+  //         videosQuery = videosQuery.order("likes", { ascending: false })
+  //         break
+  //     }
 
-      // Limit results
-      projectsQuery = projectsQuery.limit(20)
-      videosQuery = videosQuery.limit(20)
+  //     // Limit results
+  //     projectsQuery = projectsQuery.limit(20)
+  //     videosQuery = videosQuery.limit(20)
 
-      const promises = []
+  //     const promises = []
 
-      if (filters.type === "all" || filters.type === "projects") {
-        promises.push(projectsQuery)
-      }
+  //     if (filters.type === "all" || filters.type === "projects") {
+  //       promises.push(projectsQuery)
+  //     }
 
-      if (filters.type === "all" || filters.type === "videos") {
-        promises.push(videosQuery)
-      }
+  //     if (filters.type === "all" || filters.type === "videos") {
+  //       promises.push(videosQuery)
+  //     }
 
-      const results = await Promise.all(promises)
+  //     const results = await Promise.all(promises)
 
-      let allContent: ExploreContent[] = []
+  //     let allContent: ExploreContent[] = []
 
-      if (filters.type === "all") {
-        const [projectsResult, videosResult] = results
+  //     if (filters.type === "all") {
+  //       const [projectsResult, videosResult] = results
 
-        const projects =
-          projectsResult.data?.map((project) => ({
-            id: project.id,
-            type: "project" as const,
-            title: project.title,
-            description: project.description,
-            thumbnail_url: project.thumbnail_url,
-            created_at: project.created_at,
-            user: project.user,
-            stats: {
-              views: project.views || 0,
-              likes: project.likes || 0,
-              comments: 0, // TODO: Add comments count
-            },
-          })) || []
+  //       const projects =
+  //         projectsResult.data?.map((project) => ({
+  //           id: project.id,
+  //           type: "project" as const,
+  //           title: project.title,
+  //           description: project.description,
+  //           thumbnail_url: project.thumbnail_url,
+  //           created_at: project.created_at,
+  //           user: project.user,
+  //           stats: {
+  //             views: project.views || 0,
+  //             likes: project.likes || 0,
+  //             comments: 0, // TODO: Add comments count
+  //           },
+  //         })) || []
 
-        const videos =
-          videosResult.data?.map((video) => ({
-            id: video.id,
-            type: "video" as const,
-            title: video.title,
-            description: video.description,
-            thumbnail_url: video.thumbnail_url,
-            created_at: video.created_at,
-            user: video.user,
-            stats: {
-              views: video.views || 0,
-              likes: video.likes || 0,
-              comments: 0, // TODO: Add comments count
-            },
-          })) || []
+  //       const videos =
+  //         videosResult.data?.map((video) => ({
+  //           id: video.id,
+  //           type: "video" as const,
+  //           title: video.title,
+  //           description: video.description,
+  //           thumbnail_url: video.thumbnail_url,
+  //           created_at: video.created_at,
+  //           user: video.user,
+  //           stats: {
+  //             views: video.views || 0,
+  //             likes: video.likes || 0,
+  //             comments: 0, // TODO: Add comments count
+  //           },
+  //         })) || []
 
-        allContent = [...projects, ...videos]
-      } else if (filters.type === "projects") {
-        const [projectsResult] = results
-        allContent =
-          projectsResult.data?.map((project) => ({
-            id: project.id,
-            type: "project" as const,
-            title: project.title,
-            description: project.description,
-            thumbnail_url: project.thumbnail_url,
-            created_at: project.created_at,
-            user: project.user,
-            stats: {
-              views: project.views || 0,
-              likes: project.likes || 0,
-              comments: 0,
-            },
-          })) || []
-      } else {
-        const [videosResult] = results
-        allContent =
-          videosResult.data?.map((video) => ({
-            id: video.id,
-            type: "video" as const,
-            title: video.title,
-            description: video.description,
-            thumbnail_url: video.thumbnail_url,
-            created_at: video.created_at,
-            user: video.user,
-            stats: {
-              views: video.views || 0,
-              likes: video.likes || 0,
-              comments: 0,
-            },
-          })) || []
-      }
+  //       allContent = [...projects, ...videos]
+  //     } else if (filters.type === "projects") {
+  //       const [projectsResult] = results
+  //       allContent =
+  //         projectsResult.data?.map((project) => ({
+  //           id: project.id,
+  //           type: "project" as const,
+  //           title: project.title,
+  //           description: project.description,
+  //           thumbnail_url: project.thumbnail_url,
+  //           created_at: project.created_at,
+  //           user: project.user,
+  //           stats: {
+  //             views: project.views || 0,
+  //             likes: project.likes || 0,
+  //             comments: 0,
+  //           },
+  //         })) || []
+  //     } else {
+  //       const [videosResult] = results
+  //       allContent =
+  //         videosResult.data?.map((video) => ({
+  //           id: video.id,
+  //           type: "video" as const,
+  //           title: video.title,
+  //           description: video.description,
+  //           thumbnail_url: video.thumbnail_url,
+  //           created_at: video.created_at,
+  //           user: video.user,
+  //           stats: {
+  //             views: video.views || 0,
+  //             likes: video.likes || 0,
+  //             comments: 0,
+  //           },
+  //         })) || []
+  //     }
 
-      // Sort mixed content by date if needed
-      if (filters.type === "all") {
-        allContent.sort((a, b) => {
-          switch (filters.sortBy) {
-            case "latest":
-              return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-            case "trending":
-            case "popular":
-              return b.stats.views - a.stats.views
-            default:
-              return 0
-          }
-        })
-      }
+  //     // Sort mixed content by date if needed
+  //     if (filters.type === "all") {
+  //       allContent.sort((a, b) => {
+  //         switch (filters.sortBy) {
+  //           case "latest":
+  //             return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  //           case "trending":
+  //           case "popular":
+  //             return b.stats.views - a.stats.views
+  //           default:
+  //             return 0
+  //         }
+  //       })
+  //     }
 
-      setContent(allContent)
-    } catch (error) {
-      console.error("Error fetching content:", error)
-    } finally {
-      setLoading(false)
-    }
-  }, [debouncedSearchQuery, filters])
+  //     setContent(allContent)
+  //   } catch (error) {
+  //     console.error("Error fetching content:", error)
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }, [debouncedSearchQuery, filters])
 
-  useEffect(() => {
-    fetchContent()
-  }, [fetchContent])
+  // useEffect(() => {
+  //   fetchContent()
+  // }, [fetchContent])
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString)

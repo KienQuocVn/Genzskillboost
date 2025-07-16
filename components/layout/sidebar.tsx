@@ -27,21 +27,21 @@ export function Sidebar({ activeTab }: SidebarProps) {
       <div className="p-6 border-b border-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-genz-purple to-genz-pink rounded-lg flex items-center justify-center">
+            {/* <div className="w-8 h-8 bg-gradient-to-r from-genz-purple to-genz-pink rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">GZ</span>
-            </div>
+            </div> */}
             <span className="font-bold text-lg">GenZSkillBoost</span>
           </div>
           <div className="flex items-center space-x-1">
             <Notifications />
-            <Button
+            {/* <Button
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="h-8 w-8"
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
